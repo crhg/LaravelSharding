@@ -1,6 +1,6 @@
 <?php
 
-namespace Crhg\Laravel\Sharding\Database;
+namespace Crhg\LaravelSharding\Database;
 
 use Closure;
 use Illuminate\Database\Eloquent\Model;
@@ -8,6 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 abstract class ShardingModel extends Model
 {
     abstract public function getShardingManager(): ShardingManager;
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+    }
+
 
     public function getShardConnection(string|Closure $default = null): string
     {

@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Crhg\\Laravel\\Sharding\\": "src/"
+            "Crhg\\LaravelSharding\\": "src/"
         }
     },
     "autoload-dev": {

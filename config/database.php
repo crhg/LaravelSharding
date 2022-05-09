@@ -67,6 +67,11 @@ return [
             ) : [],
         ],
 
+        'a' => [
+            'driver' => 'sharding',
+            'connections' => ['a1', 'a2'],
+        ],
+
         'a1' => [
             'driver'         => 'mysql',
             'url'            => env('DATABASE_URL'),

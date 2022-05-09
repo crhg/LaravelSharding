@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use Crhg\Laravel\Sharding\Testing\RefreshShardingDatabase;
+use Crhg\LaravelSharding\Testing\RefreshShardingDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 

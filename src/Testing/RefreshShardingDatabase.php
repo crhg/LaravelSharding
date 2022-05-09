@@ -1,6 +1,6 @@
 <?php
 
-namespace Crhg\Laravel\Sharding\Testing;
+namespace Crhg\LaravelSharding\Testing;
 
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Application;

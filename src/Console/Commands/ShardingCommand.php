@@ -1,11 +1,9 @@
 <?php
 
-namespace Crhg\Laravel\Sharding\Console\Commands;
+namespace Crhg\LaravelSharding\Console\Commands;
 
-use Illuminate\Config\Repository;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Config;
 
 class ShardingCommand extends Command
 {

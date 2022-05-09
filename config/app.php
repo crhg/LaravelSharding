@@ -195,7 +195,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        \Crhg\Laravel\Sharding\Providers\ShardingProvider::class,
+        \Crhg\LaravelSharding\Providers\ShardingServiceProvider::class,
 
     ],
 
