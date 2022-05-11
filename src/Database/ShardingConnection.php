@@ -57,9 +57,9 @@ class ShardingConnection extends Connection
 
     public function getConnectionsByWheres(array $wheres, string $from): Collection
     {
-        return collect($this->config['connections'])
-            ->filter(fn($c) => true)
-            ->map(fn($name)=>DB::connection($name));
+        return $this->getShardingGroup()
+            ->getTableConfig($from)
+            ->getConnectionsByWheres($wheres);
     }
 
 

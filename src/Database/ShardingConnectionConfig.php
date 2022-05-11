@@ -20,7 +20,7 @@ class ShardingConnectionConfig
 
     public function contains(int $id): bool
     {
-        return $this->from >= $id && $id <= $this->to;
+        return $this->from <= $id && $id <= $this->to;
     }
 
     public function getConnectionName(): string
