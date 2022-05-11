@@ -13,8 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('foo', function (Blueprint $table) {
-            $table->id()->from(config('database.sharding.connection.from'));
+        $shardingGroup = new \Crhg\LaravelSharding\Database\ShardingGroup(config('database.sharding_groups.a'));
+        $tableConfig = $shardingGroup->getTableConfig('foo');
+        $connectionConfig = $tableConfig->getConnectionConfig(config('database.default'));
+
+        Schema::create('foo', function (Blueprint $table) use ($connectionConfig) {
+            $table->id()->from($connectionConfig->getFrom());
             $table->string('x', 100)->nullable();
             $table->timestamps();
         });

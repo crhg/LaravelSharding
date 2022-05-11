@@ -34,6 +34,7 @@ class ShardingServiceProvider extends ServiceProvider
 
         $databaseManager->extend('sharding',
             function (array $config, string $name): ShardingConnection {
+                $config['name'] = $name; // XXX: parseConfigをよばないのでここでやる
                 return new ShardingConnection($config);
             }
         );

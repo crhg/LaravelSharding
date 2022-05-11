@@ -2,27 +2,23 @@
 
 namespace Crhg\LaravelSharding\Database;
 
+use Crhg\LaravelSharding\Exceptions\UnambiguousShardException;
 use Illuminate\Database\Query\Builder;
 
 class ShardingQueryBuilder extends Builder
 {
-//    /**
-//     * @noinspection MagicMethodsValidityInspection
-//     * @noinspection PhpMissingParentConstructorInspection
-//     */
-//    public function __construct(
-//        Grammar $grammar,
-//        Processor $processor
-//    ) {
-//    }
-
-    protected function runSelect()
+    protected function runSelect(): array
     {
         if ($this->connection instanceof ShardingConnection) {
-            return $this->connection->getConnections()
-                ->flatMap(
-                    fn($connection) => $connection->select($this->toSql(), $this->getBindings(), !$this->useWritePdo)
-                )
+            if (!empty($this->orders)) {
+                throw new UnambiguousShardException();
+            }
+
+            $sql = $this->toSql();
+            $bindings = $this->getBindings();
+            return $this->connection
+                ->getConnectionsByWheres($this->wheres, $this->from)
+                ->flatMap(fn($c) => $c->select($sql, $bindings, !$this->useWritePdo))
                 ->all();
         }
 

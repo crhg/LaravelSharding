@@ -68,8 +68,9 @@ return [
         ],
 
         'a' => [
-            'driver' => 'sharding',
-            'connections' => ['a1', 'a2'],
+            'driver'         => 'sharding',
+            'sharding_group' => 'a',
+            'connections'    => ['a1', 'a2'],
         ],
 
         'a1' => [
@@ -211,10 +212,23 @@ return [
 
     'sharding_groups' => [
         'a' => [
-            'connections' => [
-                [ 'name' => 'a1', 'from' => 1, 'to' => 10000, ],
-                [ 'name' => 'a2', 'from' => 10001, 'to' => 20000, ],
+            'tables' => [
+                'foo' => [
+                    'key'         => 'id',
+                    'connections' => [
+                        [
+                            'name' => 'a1',
+                            'from' => 1,
+                            'to'   => 10000,
+                        ],
+                        [
+                            'name' => 'a2',
+                            'from' => 10001,
+                            'to'   => 20000,
+                        ],
+                    ],
+                ],
             ],
-        ]
-    ]
+        ],
+    ],
 ];

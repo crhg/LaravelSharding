@@ -5,11 +5,13 @@ namespace Crhg\LaravelSharding\Database;
 use Closure;
 use Crhg\LaravelSharding\Exceptions\UnambiguousShardException;
 use Illuminate\Database\Connection;
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ShardingConnection extends Connection
 {
+    private ShardingGroup $shardingGroup;
     /**
      * @noinspection MagicMethodsValidityInspection
      * @noinspection PhpMissingParentConstructorInspection
@@ -20,6 +22,16 @@ class ShardingConnection extends Connection
         $this->config = $config;
         $this->useDefaultQueryGrammar();
         $this->useDefaultPostProcessor();
+    }
+
+    public function getShardingGroup(): ShardingGroup
+    {
+        if (isset($this->shardingGroup)) {
+            return $this->shardingGroup;
+        }
+
+        $this->shardingGroup = ShardingGroup::createByName($this->config['sharding_group']);
+        return $this->shardingGroup;
     }
 
     protected function getDefaultQueryGrammar()
@@ -41,6 +53,27 @@ class ShardingConnection extends Connection
     {
         return collect($this->config['connections'])
             ->map(fn ($name) => DB::connection($name));
+    }
+
+    public function getConnectionsByWheres(array $wheres, string $from): Collection
+    {
+        return collect($this->config['connections'])
+            ->filter(fn($c) => true)
+            ->map(fn($name)=>DB::connection($name));
+    }
+
+
+    public function getConnectionNameByModel(ShardingModel $model): string
+    {
+        $shardingGroup = $this->getShardingGroup();
+        $tableConfig = $shardingGroup->getTableConfig($model->getTable());
+        $key = $tableConfig->getKey();
+        $id = $model->getAttribute($key);
+        if ($id === null) {
+            return $tableConfig->getConnectionNameWithoutId();
+        }
+
+        return $tableConfig->getConnectionNameById($id);
     }
 
     public function table($table, $as = null)

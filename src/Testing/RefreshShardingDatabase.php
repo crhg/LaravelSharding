@@ -2,6 +2,7 @@
 
 namespace Crhg\LaravelSharding\Testing;
 
+use Crhg\LaravelSharding\Database\ShardingGroup;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -50,8 +51,8 @@ trait RefreshShardingDatabase
             [
                 null,
                 ...collect(config('database.sharding_groups'))
-                    ->flatMap(fn($c) => collect($c['connections'])
-                        ->map(fn($c) => $c['name']))
+                    ->map(fn($config) => new ShardingGroup($config))
+                    ->flatMap(fn(ShardingGroup $g) => $g->getAllConnectionNames())
                     ->all(),
             ];
     }

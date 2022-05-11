@@ -13,10 +13,12 @@ class FooTest extends TestCase
 
     public function testCreate(): void
     {
+        /** @var Foo $foo */
         $foo = Foo::create(['x' => 'foo']);
 
-        $shardingManager = $foo->getShardingManager();
-        $connection = $shardingManager->getConnection($foo->id);
+        $connection = (collect(config('database.sharding_groups.a.tables.foo.connections'))
+            ->firstOrFail(fn($c) => $c['from'] <= $foo->id && $foo->id <= $c['to']))['name'];
+
         $this->assertDatabaseHas(
             'foo',
             ['id' => $foo->id, 'x' => 'foo'],
@@ -101,7 +103,7 @@ class FooTest extends TestCase
 
     public function getConnectionConfig(string $name): array
     {
-        return (collect(config('database.sharding_groups.a.connections'))
+        return (collect(config('database.sharding_groups.a.tables.foo.connections'))
             ->firstOrFail(fn($c) => $c['name'] === $name));
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Crhg\LaravelSharding\Console\Commands;
 
+use Crhg\LaravelSharding\Database\ShardingGroup;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 
@@ -29,14 +30,15 @@ class ShardingCommand extends Command
     public function handle()
     {
         foreach (config('database.sharding_groups') as $group_name => $g) {
+            $shardingGroup = new ShardingGroup($g);
             $command = $this->makeCommand($group_name);
-            foreach ($g['connections'] as $c) {
-                $name = $c['name'];
+
+            foreach ($shardingGroup->getAllConnectionNames() as $name) {
                 $this->line('group=' . $group_name . ', connection=' . $name);
                 $this->withConfigs(
                     [
                         'database.default' => $name,
-                        'database.sharding.connection' => $c,
+//                        'database.sharding.connection' => $c,
                     ],
                     fn() => Artisan::call($command, outputBuffer: $this->getOutput())
                 );

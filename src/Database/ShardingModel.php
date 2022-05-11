@@ -7,22 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class ShardingModel extends Model
 {
-    abstract public function getShardingManager(): ShardingManager;
+//    abstract public function getShardingManager(): ShardingManager;
 
-    public function __construct(array $attributes = [])
+    public function getShardConnection(): string
     {
-        parent::__construct($attributes);
-    }
+        $connection = $this->getConnection();
+        assert($connection instanceof ShardingConnection);
 
-
-    public function getShardConnection(string|Closure $default = null): string
-    {
-        return optional(
-                $this->getAttribute($this->getKeyName()),
-                fn($id) => $this->getShardingManager()->getConnection($id)
-            )
-            ?? value($default)
-            ?? throw new \RuntimeException("shardが決定できません");
+        return $connection->getConnectionNameByModel($this);
     }
 
     /**
@@ -36,9 +28,9 @@ abstract class ShardingModel extends Model
      */
     public function save(array $options = []): bool
     {
-        $this->setConnection(
-            $this->getShardConnection(fn() => $this->getShardingManager()->getConnectionWithoutId())
-        );
+        if ($this->getConnection() instanceof ShardingConnection) {
+            $this->setConnection($this->getShardConnection());
+        }
 
         return parent::save($options);
     }
