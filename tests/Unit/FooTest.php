@@ -26,6 +26,24 @@ class FooTest extends TestCase
         );
     }
 
+    public function testUpdate(): void
+    {
+        /** @var Foo $foo */
+        $foo = Foo::create(['x' => 'foo']);
+
+        $foo->x = 'bar';
+        $foo->save();
+
+        $connection = (collect(config('database.sharding_groups.a.tables.foo.connections'))
+            ->firstOrFail(fn($c) => $c['from'] <= $foo->id && $foo->id <= $c['to']))['name'];
+
+        $this->assertDatabaseHas(
+            'foo',
+            ['id' => $foo->id, 'x' => 'bar'],
+            $connection
+        );
+    }
+
     /**
      * テーブルが空の時の全件取得
      */
