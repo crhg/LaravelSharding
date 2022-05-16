@@ -15,9 +15,4 @@ class Foo extends ShardingModel
     protected $connection = 'a';
     protected $table = 'foo';
     protected $fillable = ['x'];
-
-//    public function getShardingManager(): ShardingManager
-//    {
-//        return new ShardingManager(config('database.sharding_groups.a'));
-//    }
 }
