@@ -37,24 +37,9 @@ class FooTest extends TestCase
 
     public function testGet2(): void
     {
-        Foo::create(
-            [
-                'id' => $this->getId('a1', 0),
-                'x'  => 'a',
-            ]
-        );
-        Foo::create(
-            [
-                'id' => $this->getId('a1', 1),
-                'x'  => 'b',
-            ]
-        );
-        Foo::create(
-            [
-                'id' => $this->getId('a2', 0),
-                'x'  => 'c',
-            ]
-        );
+        (new Foo)->setConnection('a1')->create(['x' => 'a']);
+        (new Foo)->setConnection('a1')->create(['x' => 'b']);
+        (new Foo)->setConnection('a2')->create(['x' => 'c']);
 
         $foos = Foo::query()->get();
 
@@ -69,18 +54,8 @@ class FooTest extends TestCase
      */
     public function testFind(): void
     {
-        $foo1 = Foo::create(
-            [
-                'id' => $this->getId('a1', 1),
-                'x'  => 'a',
-            ]
-        );
-        $foo2 = Foo::create(
-            [
-                'id' => $this->getId('a2', 1),
-                'x'  => 'b',
-            ]
-        );
+        $foo1 = (new Foo)->setConnection('a1')->create(['x' => 'a']);
+        $foo2 = (new Foo)->setConnection('a2')->create(['x' => 'b']);
 
         DB::connection('a1')->enableQueryLog();
         DB::connection('a2')->enableQueryLog();
@@ -89,21 +64,5 @@ class FooTest extends TestCase
 
         $this->assertCount(1, DB::Connection('a1')->getQueryLog());
         $this->assertCount(0, DB::Connection('a2')->getQueryLog());
-    }
-
-    private function getId(string $name, int $index): int
-    {
-        return $this->getFrom($name) + $index;
-    }
-
-    public function getFrom(string $name): int
-    {
-        return $this->getConnectionConfig($name)['from'];
-    }
-
-    public function getConnectionConfig(string $name): array
-    {
-        return (collect(config('database.sharding_groups.a.tables.foo.connections'))
-            ->firstOrFail(fn($c) => $c['name'] === $name));
     }
 }
