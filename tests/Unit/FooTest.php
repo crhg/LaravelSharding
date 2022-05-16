@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\Foo;
+use App\Models\User;
 use Crhg\LaravelSharding\Testing\RefreshShardingDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -14,14 +15,14 @@ class FooTest extends TestCase
     public function testCreate(): void
     {
         /** @var Foo $foo */
-        $foo = Foo::create(['x' => 'foo']);
+        $foo = Foo::factory()->create();
 
         $connection = (collect(config('database.sharding_groups.a.tables.foo.connections'))
             ->firstOrFail(fn($c) => $c['from'] <= $foo->id && $foo->id <= $c['to']))['name'];
 
         $this->assertDatabaseHas(
             'foo',
-            ['id' => $foo->id, 'x' => 'foo'],
+            ['id' => $foo->id, 'x' => $foo->x],
             $connection
         );
     }
@@ -37,15 +38,14 @@ class FooTest extends TestCase
 
     public function testGet2(): void
     {
-        (new Foo)->setConnection('a1')->create(['x' => 'a']);
-        (new Foo)->setConnection('a1')->create(['x' => 'b']);
-        (new Foo)->setConnection('a2')->create(['x' => 'c']);
+        $foos = collect(['a1', 'a1', 'a2'])
+            ->map(fn($connectionName) => Foo::factory()->connection($connectionName)->create());
 
-        $foos = Foo::query()->get();
+        $actual = Foo::query()->get();
 
         $this->assertSame(
-            ['a', 'b', 'c'],
-            $foos->map(fn($foo) => $foo->x)->sort()->values()->all()
+            $foos->map(fn($foo) => $foo->x)->sort()->values()->all(),
+            $actual->map(fn($foo) => $foo->x)->sort()->values()->all()
         );
     }
 
@@ -54,8 +54,8 @@ class FooTest extends TestCase
      */
     public function testFind(): void
     {
-        $foo1 = (new Foo)->setConnection('a1')->create(['x' => 'a']);
-        $foo2 = (new Foo)->setConnection('a2')->create(['x' => 'b']);
+        $foo1 = Foo::factory()->connection('a1')->create();
+        Foo::factory()->connection('a2')->create();
 
         DB::connection('a1')->enableQueryLog();
         DB::connection('a2')->enableQueryLog();
