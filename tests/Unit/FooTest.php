@@ -43,9 +43,9 @@ class FooTest extends TestCase
 
         $actual = Foo::query()->get();
 
-        $this->assertSame(
-            $foos->map(fn($foo) => $foo->x)->sort()->values()->all(),
-            $actual->map(fn($foo) => $foo->x)->sort()->values()->all()
+        $this->assertEqualsCanonicalizing(
+            $foos->map(fn($foo) => $foo->x),
+            $actual->map(fn($foo) => $foo->x)
         );
     }
 
