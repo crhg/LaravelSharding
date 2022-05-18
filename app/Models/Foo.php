@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Crhg\LaravelSharding\Database\ShardingEloquentBuilder;
 use Crhg\LaravelSharding\Database\ShardingModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -12,12 +13,9 @@ use Crhg\LaravelSharding\Database\ShardingModel;
  */
 class Foo extends ShardingModel
 {
+    use HasFactory;
+
     protected $connection = 'a';
     protected $table = 'foo';
     protected $fillable = ['x'];
-
-//    public function getShardingManager(): ShardingManager
-//    {
-//        return new ShardingManager(config('database.sharding_groups.a'));
-//    }
 }

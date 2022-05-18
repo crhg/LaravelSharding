@@ -50,7 +50,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "providers": [
+                "\\Crhg\\LaravelSharding\\Providers\\ShardingServiceProvider"
+            ]
         }
     },
     "config": {
