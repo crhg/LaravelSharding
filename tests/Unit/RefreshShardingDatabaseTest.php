@@ -3,10 +3,9 @@
 namespace Tests\Unit;
 
 use Crhg\LaravelSharding\Testing\RefreshShardingDatabase;
-use Illuminate\Support\Facades\DB;
-use Tests\TestCase;
+use Orchestra\Testbench\TestCase;
 
-class RefreshShardingDatabaseTest extends \Orchestra\Testbench\TestCase
+class RefreshShardingDatabaseTest extends TestCase
 {
     protected function setUp(): void
     {
