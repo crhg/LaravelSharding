@@ -38,7 +38,6 @@ class ShardingCommand extends Command
                 $this->withConfigs(
                     [
                         'database.default' => $name,
-//                        'database.sharding.connection' => $c,
                     ],
                     fn() => Artisan::call($command, outputBuffer: $this->getOutput())
                 );

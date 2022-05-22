@@ -26,5 +26,11 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
+
+        <env name="DB_HOST" value="mysql"/>
+        <env name="DB_USERNAME" value="sail"/>
+        <env name="DB_PASSWORD" value="password"/>
+        <env name="DB_DATABASE_A1" value="testing_a1"/>
+        <env name="DB_DATABASE_A2" value="testing_a2"/>
     </php>
 </phpunit>

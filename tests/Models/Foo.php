@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace Tests\Models;
 
 use Crhg\LaravelSharding\Database\ShardingEloquentBuilder;
 use Crhg\LaravelSharding\Database\ShardingModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Tests\Factories\FooFactory;
 
 /**
  * @property int $id
@@ -18,4 +19,9 @@ class Foo extends ShardingModel
     protected $connection = 'a';
     protected $table = 'foo';
     protected $fillable = ['x'];
+
+    protected static function newFactory()
+    {
+        return FooFactory::new();
+    }
 }

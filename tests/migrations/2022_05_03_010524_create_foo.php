@@ -1,5 +1,6 @@
 <?php
 
+use Crhg\LaravelSharding\Database\ShardingGroup;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,7 +14,7 @@ return new class extends Migration
      */
     public function up()
     {
-        $shardingGroup = new \Crhg\LaravelSharding\Database\ShardingGroup(config('database.sharding_groups.a'));
+        $shardingGroup = new ShardingGroup(config('database.sharding_groups.a'));
         $tableConfig = $shardingGroup->getTableConfig('foo');
         $connectionConfig = $tableConfig->getConnectionConfig(config('database.default'));
 
