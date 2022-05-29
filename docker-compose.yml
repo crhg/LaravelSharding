@@ -25,11 +25,8 @@ services:
         volumes:
             - 'sail-mysql:/var/lib/mysql'
             - type: bind
-              source: './vendor/laravel/sail/database/mysql/create-testing-database.sh'
+              source: './docker/mysql/create-testing-database.sh'
               target: '/docker-entrypoint-initdb.d/10-create-testing-database.sh'
-            - type: bind
-              source: './docker/mysql/create-testing-sharding-database.sh'
-              target: '/docker-entrypoint-initdb.d/20-create-testing-sharding-database.sh'
         networks:
             - sail
         healthcheck:
